@@ -15,17 +15,22 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v7
-
       - name: Setup Node
         uses: actions/setup-node@v6
         with:
           node-version: '26.x'
-
+      - name: Download cached dependencies
+        uses: actions/cache@v6
+        if: ${{ inputs.use-cache }}
+        id: cache
+        with:
+          path: 13-caching/react-app/node_modules
+          key: deps-node-modules-${{ hashFiles('13-caching/react-app/package-lock.json')}}
       - name: Install dependencies
+        if: ${{ steps.cache.outputs.cache-hit != 'true' }}
         run: npm ci
       - name: Testing
         run: npm run test
-
       - name: Building
         run: npm run build
       - name: Deploying to nonprod
