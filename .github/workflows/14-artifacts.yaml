@@ -5,8 +5,6 @@ on:
 jobs:
   test-build:
     runs-on: ubuntu-latest
-    outputs: 
-        deps-cache-key: ${{ steps.cache-key.outputs.CACHE_KEY }}
     defaults:
         run:
           working-directory: 14-artifacts/react-app
@@ -17,15 +15,12 @@ jobs:
         uses: actions/setup-node@v6
         with:
           node-version: 26.x
-      - name: Calculate cache key
-        id: cache-key
-        run echo "CACHE_KEY=deps-node-modules-${{hashFiles('14-artifacts/react-app/package-lock.json') }}" >> '$GITHUB_OUTPUT'
       - name: Download Cached Dependencies
         uses: actions/cache@v6
         id: cache
         with:
           path: 14-artifacts/react-app/node_modules
-          key: ${{ steps.cache-key.outputs.CACHE_KEY }}
+          key: deps-node-modules-${{ hashFiles('14-artifacts/react-app/package-lock.json') }}
       - name: Install Dependencies
         if: ${{ steps.cache.outputs.cache-hit != 'true'}}
         run: npm ci
@@ -34,7 +29,7 @@ jobs:
       - name: Build Code
         run: npm run build
       - name: Upload Build files
-        uses: actions/upload-artifacts@v7
+        uses: actions/upload-artifact@v7
         with:
           name: app
           path: 14-artifacts/react-app/build
