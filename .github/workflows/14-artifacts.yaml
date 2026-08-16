@@ -48,7 +48,7 @@ jobs:
       - name: Download build files
         uses: actions/download-artifact@v8
         with:
-          name: ${{ env.build-artifact-key }}
+          name: ${{ env.test-report-key }}
           path: build
       - name: Show folder structure
         run: ls -R
