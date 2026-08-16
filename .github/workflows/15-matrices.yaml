@@ -11,7 +11,7 @@ jobs:
                 - 26.x
             os:
               - ubuntu-latest
-              - window-latest
+              - windows-latest
          
     runs-on: ${{ matrix.os }}
     steps:
